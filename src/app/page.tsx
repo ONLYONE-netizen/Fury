@@ -107,11 +107,11 @@ export default function FuryPage() {
         setTranscript(text.trim())
         transcriptAvailable = true
         setProgress(40)
-        setProgLabel('Generating content with Gemini...')
+        setProgLabel('Generating content...')
       }
 
       setProgress(65)
-      setProgLabel('Gemini AI is writing 6 formats...')
+      setProgLabel('Swift Lab AI is writing 6 formats...')
 
       const res = await fetch('/api/repurpose', {
         method: 'POST',
@@ -392,7 +392,7 @@ export default function FuryPage() {
             Fury by Swift Lab — Your content is never stored.
           </p>
           <p style={{ fontSize: '12px', color: 'var(--muted)' }}>
-            Powered by Gemini 1.5 Flash
+            Powered by Swift Lab
           </p>
         </div>
       </footer>
