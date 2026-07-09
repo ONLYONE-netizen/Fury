@@ -22,7 +22,7 @@ const TABS = [
 const STEPS = [
   { label: 'Fetching transcript...', pct: 30 },
   { label: 'Analyzing content...', pct: 55 },
-  { label: 'Writing 6 formats with Gemini...', pct: 75 },
+  { label: 'Writing 6 formats with Fury...', pct: 75 },
   { label: 'Finalizing output...', pct: 90 },
 ]
 
@@ -211,7 +211,7 @@ export default function FuryPage() {
         await animateProgress(40, 'Content ready. Writing 6 formats...')
       }
 
-      await animateProgress(65, 'Gemini AI is writing your content...')
+      await animateProgress(65, 'Fury AI is writing your content...')
 
       const res = await fetch('/api/repurpose', {
         method: 'POST',
@@ -224,7 +224,7 @@ export default function FuryPage() {
         if (res.status === 429) {
           setError('Rate limit reached. Wait 60 seconds and try again.')
         } else if (res.status === 401) {
-          setError('Invalid Gemini API key. Check your environment variables.')
+          setError('Invalid Fury API key. Check your environment variables.')
         } else {
           setError(data.error || 'Content generation failed. Please try again.')
         }

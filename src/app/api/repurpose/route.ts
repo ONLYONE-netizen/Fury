@@ -12,10 +12,11 @@ export async function POST(req: Request) {
     }
 
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       generationConfig: {
         temperature: 0.8,
-        maxOutputTokens: 8192,
+        maxOutputTokens: 16384,
+        thinkingConfig: { thinkingBudget: 0 },
         responseMimeType: 'application/json',
       },
     })
@@ -66,7 +67,8 @@ Return ONLY a valid JSON object with these exact keys:
       else if (text[i] === '}') { depth--; if (depth === 0) { end = i; break } }
     }
     if (start === -1 || end === -1) throw new Error('Invalid response format from AI')
-    const parsed = JSON.parse(text.slice(start, end + 1))
+    const jsonSlice = text.slice(start, end + 1).replace(/,(\s*[}\]])/g, '$1')
+    const parsed = JSON.parse(jsonSlice)
 
     // Validate required fields
     const required = ['hook', 'summary', 'tweets', 'linkedin', 'blog', 'newsletter']
@@ -80,10 +82,10 @@ Return ONLY a valid JSON object with these exact keys:
     console.error('Repurpose error:', err)
 
     if (err.message?.includes('API_KEY')) {
-      return NextResponse.json({ error: 'Invalid Gemini API key. Check your environment variables.' }, { status: 401 })
+      return NextResponse.json({ error: 'Invalid Fury API key. Check your environment variables.' }, { status: 401 })
     }
     if (err.message?.includes('quota') || err.message?.includes('429')) {
-      return NextResponse.json({ error: 'Gemini rate limit reached. Wait a minute and try again.' }, { status: 429 })
+      return NextResponse.json({ error: 'Fury rate limit reached. Wait a minute and try again.' }, { status: 429 })
     }
 
     return NextResponse.json({ error: err.message || 'Content generation failed' }, { status: 500 })
