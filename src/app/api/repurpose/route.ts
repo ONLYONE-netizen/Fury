@@ -16,6 +16,7 @@ export async function POST(req: Request) {
       generationConfig: {
         temperature: 0.8,
         maxOutputTokens: 16384,
+        // @ts-ignore - thinkingConfig not in this SDK version's types, but supported by the API
         thinkingConfig: { thinkingBudget: 0 },
         responseMimeType: 'application/json',
       },
