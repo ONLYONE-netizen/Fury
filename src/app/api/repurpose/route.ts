@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
+import { createClient } from '@supabase/supabase-js'
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
+const genAI    = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 
 export async function POST(req: Request) {
   try {
-    const { content, title, author, transcriptAvailable } = await req.json()
+    const { content, title, author, transcriptAvailable, userId } = await req.json()
 
     if (!content?.trim()) {
       return NextResponse.json({ error: 'No content provided' }, { status: 400 })
@@ -55,7 +57,8 @@ Return ONLY a valid JSON object with these exact keys:
   "newsletter": {
     "subject": "Email subject line under 60 characters. Compelling and specific. Makes people want to open it.",
     "body": "Full newsletter body between 300 and 500 words. Conversational tone. Open with context. Share the 3 most valuable insights. Close with one clear call to action and a sign-off."
-  }
+  },
+  "imagePrompt": "Clean visual description representing the main idea of this content. Under 80 words."
 }`
 
     const result = await model.generateContent(prompt)
@@ -75,6 +78,15 @@ Return ONLY a valid JSON object with these exact keys:
     const required = ['hook', 'summary', 'tweets', 'linkedin', 'blog', 'newsletter']
     for (const key of required) {
       if (!parsed[key]) throw new Error(`Missing field: ${key}`)
+    }
+
+    // Save to history (best-effort — don't fail the request if this errors)
+    if (userId) {
+      const { error: historyError } = await supabase.from('fury_history').insert({
+        user_id: userId, title: title || 'Untitled',
+        content: JSON.stringify(parsed), created_at: new Date().toISOString(),
+      })
+      if (historyError) console.error('History save error:', historyError.message)
     }
 
     return NextResponse.json(parsed)

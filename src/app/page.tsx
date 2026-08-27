@@ -1,588 +1,232 @@
-'use client'
-import { useState, useRef, useCallback } from 'react'
+import Link from 'next/link'
 
-type Result = {
-  hook: string
-  summary: string
-  tweets: string[]
-  linkedin: string
-  blog: string
-  newsletter: { subject: string; body: string }
-}
-
-const TABS = [
-  { id: 'hook', label: 'Hook' },
-  { id: 'tweets', label: 'Tweets' },
-  { id: 'linkedin', label: 'LinkedIn' },
-  { id: 'blog', label: 'Blog' },
-  { id: 'newsletter', label: 'Newsletter' },
-  { id: 'summary', label: 'Summary' },
+const FEATURES = [
+  ['Twitter/X Thread', '5 tweets ready to post as a thread. Each under 280 characters.'],
+  ['LinkedIn Post', '300-500 words with hashtags. Optimized for professional reach.'],
+  ['SEO Blog Article', '600-900 words with H1 and H2 sections. Ready to publish.'],
+  ['Email Newsletter', 'Subject line + full body. Conversational and conversion-focused.'],
+  ['Viral Hook', 'One sentence that stops the scroll. Works on every platform.'],
+  ['Content Summary', 'Key ideas extracted and distilled. Save hours of note-taking.'],
 ]
 
 const STEPS = [
-  { label: 'Fetching transcript...', pct: 30 },
-  { label: 'Analyzing content...', pct: 55 },
-  { label: 'Writing 6 formats with Fury...', pct: 75 },
-  { label: 'Finalizing output...', pct: 90 },
+  ['01', 'Paste a YouTube link or any text', 'Drop in a video URL or paste a transcript, article, or podcast notes.'],
+  ['02', 'Fury extracts and analyzes', 'The transcript is pulled automatically. AI reads and understands the full content.'],
+  ['03', 'Six formats generated instantly', 'Tweet thread, LinkedIn post, blog article, newsletter, hook, and summary — all at once.'],
 ]
 
-function CopyBtn({ text, label }: { text: string; label?: string }) {
-  const [state, setState] = useState<'idle' | 'copying' | 'copied'>('idle')
-
-  const copy = useCallback(async () => {
-    if (state !== 'idle') return
-    setState('copying')
-    try {
-      await navigator.clipboard.writeText(text)
-      setState('copied')
-      setTimeout(() => setState('idle'), 2200)
-    } catch {
-      // Fallback for older mobile browsers
-      const el = document.createElement('textarea')
-      el.value = text
-      el.style.position = 'fixed'
-      el.style.opacity = '0'
-      document.body.appendChild(el)
-      el.select()
-      document.execCommand('copy')
-      document.body.removeChild(el)
-      setState('copied')
-      setTimeout(() => setState('idle'), 2200)
-    }
-  }, [text, state])
-
+export default function LandingPage() {
   return (
-    <button
-      className={`copy-btn ${state === 'copied' ? 'copied' : state === 'copying' ? 'copying' : ''}`}
-      onClick={copy}
-      disabled={state === 'copying'}
-      aria-label={`Copy ${label || 'content'}`}
-    >
-      {state === 'copied' ? (
-        <>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20,6 9,17 4,12"/></svg>
-          Copied
-        </>
-      ) : state === 'copying' ? (
-        'Copying...'
-      ) : (
-        <>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          Copy
-        </>
-      )}
-    </button>
-  )
-}
+    <main style={{ minHeight: '100vh', background: '#fafaf9', color: '#1a1a18', fontFamily: 'Inter, sans-serif' }}>
 
-function ShareButtons({ content, type }: { content: string; type: string }) {
-  const encoded = encodeURIComponent(content.slice(0, 280))
-  const url = encodeURIComponent('https://fury.swiftlab.dev')
-
-  return (
-    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '12px' }}>
-      <a
-        href={`https://twitter.com/intent/tweet?text=${encoded}`}
-        target="_blank" rel="noopener noreferrer"
-        className="share-btn share-btn-x"
-      >
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.261 5.635zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        Post on X
-      </a>
-      <a
-        href={`https://www.linkedin.com/sharing/share-offsite/?url=${url}`}
-        target="_blank" rel="noopener noreferrer"
-        className="share-btn share-btn-li"
-      >
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-        LinkedIn
-      </a>
-      <a
-        href={`https://t.me/share/url?url=${url}&text=${encoded}`}
-        target="_blank" rel="noopener noreferrer"
-        className="share-btn share-btn-tg"
-      >
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-        Telegram
-      </a>
-      <a
-        href={`https://wa.me/?text=${encoded}`}
-        target="_blank" rel="noopener noreferrer"
-        className="share-btn share-btn-wa"
-      >
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        WhatsApp
-      </a>
-    </div>
-  )
-}
-
-function LoadingSkeleton() {
-  return (
-    <div className="fade-in" style={{ padding: '8px 0' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-        <div className="skeleton" style={{ height: '20px', width: '120px' }} />
-        <div className="skeleton" style={{ height: '36px', width: '80px', borderRadius: '8px' }} />
-      </div>
-      <div className="skeleton" style={{ height: '80px', width: '100%', marginBottom: '16px' }} />
-      <div className="skeleton" style={{ height: '14px', width: '70%', marginBottom: '8px' }} />
-      <div className="skeleton" style={{ height: '14px', width: '50%' }} />
-    </div>
-  )
-}
-
-export default function FuryPage() {
-  const [mode, setMode] = useState<'url' | 'text'>('url')
-  const [url, setUrl] = useState('')
-  const [text, setText] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [progress, setProgress] = useState(0)
-  const [progLabel, setProgLabel] = useState('')
-  const [result, setResult] = useState<Result | null>(null)
-  const [error, setError] = useState('')
-  const [activeTab, setActiveTab] = useState('hook')
-  const [transcript, setTranscript] = useState('')
-  const [noCaption, setNoCaption] = useState(false)
-  const [videoTitle, setVideoTitle] = useState('')
-  const stepRef = useRef(0)
-
-  const animateProgress = useCallback(async (targetPct: number, label: string) => {
-    setProgLabel(label)
-    setProgress(prev => {
-      if (prev < targetPct) return targetPct
-      return prev
-    })
-  }, [])
-
-  const run = async () => {
-    setLoading(true)
-    setError('')
-    setResult(null)
-    setProgress(5)
-    setProgLabel('Starting...')
-    setNoCaption(false)
-    setVideoTitle('')
-    setTranscript('')
-
-    try {
-      let content = ''
-      let title = ''
-      let author = ''
-      let transcriptAvailable = false
-
-      if (mode === 'url') {
-        if (!url.trim()) { setError('Paste a YouTube link to get started.'); setLoading(false); return }
-
-        await animateProgress(20, 'Getting video info...')
-
-        const res = await fetch('/api/transcript', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: url.trim() }),
-        })
-        const data = await res.json()
-
-        if (!res.ok) { setError(data.error || 'Could not process this video. Try pasting the transcript instead.'); setLoading(false); return }
-
-        title = data.title || ''
-        author = data.author || ''
-        transcriptAvailable = data.transcriptAvailable
-        setVideoTitle(title)
-
-        if (transcriptAvailable) {
-          content = data.transcript
-          setTranscript(data.transcript)
-          await animateProgress(50, 'Transcript extracted. Writing content...')
-        } else {
-          setNoCaption(true)
-          content = `Video: ${title} by ${author}`
-          await animateProgress(50, 'No captions — generating from video context...')
-        }
-      } else {
-        if (!text.trim()) { setError('Paste some text to repurpose.'); setLoading(false); return }
-        if (text.trim().startsWith('http') && text.trim().split(' ').length < 5) {
-          setError('That looks like a URL. Switch to the YouTube URL tab.')
-          setLoading(false); return
-        }
-        if (text.trim().length < 50) { setError('Paste more content — at least a few sentences work best.'); setLoading(false); return }
-        content = text.trim()
-        setTranscript(text.trim())
-        transcriptAvailable = true
-        await animateProgress(40, 'Content ready. Writing 6 formats...')
-      }
-
-      await animateProgress(65, 'Fury AI is writing your content...')
-
-      const res = await fetch('/api/repurpose', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, title, author, transcriptAvailable }),
-      })
-      const data = await res.json()
-
-      if (!res.ok) {
-        if (res.status === 429) {
-          setError('Rate limit reached. Wait 60 seconds and try again.')
-        } else if (res.status === 401) {
-          setError('Invalid Fury API key. Check your environment variables.')
-        } else {
-          setError(data.error || 'Content generation failed. Please try again.')
-        }
-        setLoading(false); return
-      }
-
-      await animateProgress(100, 'Done')
-      setResult(data)
-      setActiveTab('hook')
-
-    } catch (e: any) {
-      if (e.name === 'AbortError') {
-        setError('Request timed out. Please try again.')
-      } else {
-        setError('Connection error. Check your internet and try again.')
-      }
-    }
-
-    setLoading(false)
-  }
-
-  const reset = () => {
-    setResult(null); setTranscript(''); setProgress(0)
-    setUrl(''); setText(''); setError('')
-    setNoCaption(false); setVideoTitle('')
-  }
-
-  return (
-    <main style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       {/* NAV */}
-      <nav style={{
-        borderBottom: '1px solid var(--border)',
-        padding: '0 24px',
-        height: '58px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        position: 'sticky',
-        top: 0,
-        background: 'rgba(250,250,249,0.96)',
-        backdropFilter: 'blur(16px)',
-        zIndex: 10,
-      }}>
+      <nav style={{ borderBottom: '1px solid #e8e8e6', padding: '0 24px', height: '58px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, background: 'rgba(250,250,249,0.96)', backdropFilter: 'blur(16px)', zIndex: 10, maxWidth: '1100px', margin: '0 auto' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{
-            width: '28px', height: '28px',
-            background: 'var(--text)',
-            borderRadius: '7px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-            </svg>
+          <div style={{ width: '28px', height: '28px', background: '#1a1a18', borderRadius: '7px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           </div>
-          <span style={{ fontSize: '15px', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text)' }}>Fury</span>
-          <span style={{ fontSize: '11px', color: 'var(--muted)', fontFamily: 'JetBrains Mono', letterSpacing: '0.08em' }}>by Swift Lab</span>
+          <span style={{ fontSize: '15px', fontWeight: 600, letterSpacing: '-0.02em' }}>Fury</span>
+          <span style={{ fontSize: '11px', color: '#9a9a94', fontFamily: 'monospace', letterSpacing: '0.05em' }}>by Swift Lab</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '11px', color: 'var(--muted)', fontFamily: 'JetBrains Mono', letterSpacing: '0.08em' }}>REPURPOSE AI</span>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <Link href="/login" style={{ fontSize: '13px', color: '#9a9a94', textDecoration: 'none', fontWeight: 500 }}>Login</Link>
+          <Link href="/signup" style={{ background: '#1a1a18', color: '#fff', padding: '8px 18px', borderRadius: '9px', fontSize: '13px', fontWeight: 500, textDecoration: 'none' }}>Try Fury Free</Link>
         </div>
       </nav>
 
-      <div style={{ maxWidth: '760px', margin: '0 auto', padding: '52px 20px 100px' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
 
         {/* HERO */}
-        {!result && !loading && (
-          <div style={{ marginBottom: '44px' }} className="fade-up">
-            <h1 style={{
-              fontSize: 'clamp(30px,5vw,44px)',
-              fontWeight: 600,
-              letterSpacing: '-0.03em',
-              lineHeight: 1.15,
-              marginBottom: '14px',
-              color: 'var(--text)',
-            }}>
-              One video.<br />Six pieces of content.
-            </h1>
-            <p style={{ color: 'var(--muted)', fontSize: '16px', lineHeight: 1.75, maxWidth: '460px' }}>
-              Paste a YouTube link or any text. Fury generates a tweet thread, LinkedIn post, blog article, newsletter, viral hook, and summary — instantly.
-            </p>
+        <section style={{ paddingTop: '96px', paddingBottom: '80px', maxWidth: '720px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#f0f0ee', borderRadius: '999px', padding: '5px 14px', fontSize: '12px', color: '#4a4a46', fontWeight: 500, marginBottom: '32px' }}>
+            <span style={{ width: '6px', height: '6px', background: '#16a34a', borderRadius: '50%', display: 'inline-block', animation: 'pulse 2s infinite' }} />
+            Free to start — no credit card
           </div>
-        )}
 
-        {/* INPUT CARD */}
-        {!result && (
-          <div className="card fade-up" style={{ padding: '28px 28px 24px' }}>
-            {/* Mode toggle */}
-            <div style={{ display: 'flex', gap: '6px', marginBottom: '24px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '10px', padding: '4px', width: 'fit-content' }}>
-              <button
-                className={`tab ${mode === 'url' ? 'active' : ''}`}
-                onClick={() => { setMode('url'); setError('') }}
-              >YouTube URL</button>
-              <button
-                className={`tab ${mode === 'text' ? 'active' : ''}`}
-                onClick={() => { setMode('text'); setError('') }}
-              >Paste Text</button>
-            </div>
+          <h1 style={{ fontSize: 'clamp(36px, 6vw, 64px)', fontWeight: 600, letterSpacing: '-0.03em', lineHeight: 1.1, marginBottom: '20px', color: '#1a1a18' }}>
+            Stop paying for editors.<br />
+            Stop losing sleep<br />
+            over content.
+          </h1>
 
-            {mode === 'url' ? (
-              <div>
-                <div style={{ fontSize: '13px', color: 'var(--sub)', marginBottom: '10px', fontWeight: 500 }}>YouTube Link</div>
-                <input
-                  className="inp"
-                  type="url"
-                  placeholder="https://www.youtube.com/watch?v=..."
-                  value={url}
-                  onChange={e => setUrl(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && !loading && run()}
-                  autoComplete="off"
-                  autoCorrect="off"
-                  autoCapitalize="off"
-                />
-                <p style={{ fontSize: '12px', color: 'var(--muted)', marginTop: '10px', lineHeight: 1.65 }}>
-                  Works with any public YouTube video. Transcript is fetched on the server — works on all devices including mobile.
-                </p>
-              </div>
-            ) : (
-              <div>
-                <div style={{ fontSize: '13px', color: 'var(--sub)', marginBottom: '10px', fontWeight: 500 }}>Text to Repurpose</div>
-                <textarea
-                  className="inp"
-                  placeholder="Paste a transcript, article, podcast script, blog post, or any written content. The more text, the better the output..."
-                  value={text}
-                  onChange={e => setText(e.target.value)}
-                />
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
-                  <p style={{ fontSize: '12px', color: 'var(--muted)' }}>Min. 50 characters for best results</p>
-                  <p style={{ fontSize: '11px', color: text.length > 10000 ? 'var(--red)' : 'var(--muted)', fontFamily: 'JetBrains Mono' }}>
-                    {text.length.toLocaleString()}
-                  </p>
-                </div>
-              </div>
-            )}
+          <p style={{ fontSize: '18px', color: '#4a4a46', lineHeight: 1.75, marginBottom: '36px', maxWidth: '540px' }}>
+            One video or link in. Six pieces of content out — Twitter thread, LinkedIn post, blog article, newsletter, and more. In seconds.
+          </p>
 
-            {noCaption && !loading && (
-              <div className="info-box" style={{ marginTop: '16px' }}>
-                No captions found for this video. Content will be generated from the video title. For best results, paste the transcript text manually.
-              </div>
-            )}
-
-            {error && (
-              <div className="err-box" style={{ marginTop: '16px' }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0, marginTop: '1px' }}>
-                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-                  </svg>
-                  <span>{error}</span>
-                </div>
-              </div>
-            )}
-
-            {loading && (
-              <div style={{ marginTop: '20px' }}>
-                <div className="prog-bar">
-                  <div className="prog-fill" style={{ width: `${progress}%` }} />
-                </div>
-                <div className="prog-label">
-                  <div className="dot-pulse" />
-                  {progLabel}
-                </div>
-              </div>
-            )}
-
-            <button
-              className="btn btn-dark btn-full"
-              style={{ fontSize: '15px', marginTop: '20px', letterSpacing: '-0.01em' }}
-              disabled={loading || (!url.trim() && !text.trim())}
-              onClick={run}
-            >
-              {loading ? (
-                <span style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span className="spin" style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.25)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block', flexShrink: 0 }} />
-                  Generating content...
-                </span>
-              ) : (
-                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-                  </svg>
-                  Generate Content
-                </span>
-              )}
-            </button>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <Link href="/signup" style={{ background: '#1a1a18', color: '#fff', padding: '14px 32px', borderRadius: '10px', fontSize: '15px', fontWeight: 500, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              Try Fury Free
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </Link>
+            <Link href="/login" style={{ background: 'transparent', color: '#4a4a46', padding: '14px 24px', borderRadius: '10px', fontSize: '15px', fontWeight: 500, textDecoration: 'none', border: '1px solid #e8e8e6' }}>
+              I have an account
+            </Link>
           </div>
-        )}
 
-        {/* LOADING SKELETON */}
-        {loading && progress > 60 && (
-          <div className="card" style={{ padding: '28px', marginTop: '20px' }}>
-            <LoadingSkeleton />
-          </div>
-        )}
+          <p style={{ fontSize: '12px', color: '#9a9a94', marginTop: '16px' }}>
+            No credit card. No setup. Generate your first content in 30 seconds.
+          </p>
+        </section>
 
-        {/* RESULTS */}
-        {result && (
-          <div className="scale-in">
-            {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '28px', flexWrap: 'wrap', gap: '12px' }}>
-              <div>
-                <h2 style={{ fontSize: '22px', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text)', marginBottom: '4px' }}>
-                  Content Ready
-                </h2>
-                {videoTitle ? (
-                  <p style={{ color: 'var(--muted)', fontSize: '13px', maxWidth: '480px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {videoTitle}
-                  </p>
-                ) : (
-                  <p style={{ color: 'var(--muted)', fontSize: '13px' }}>6 formats generated. Copy and publish.</p>
-                )}
+        {/* DEMO VISUAL */}
+        <section style={{ paddingBottom: '80px' }}>
+          <div style={{ background: '#fff', border: '1px solid #e8e8e6', borderRadius: '16px', overflow: 'hidden' }}>
+            {/* Mock browser bar */}
+            <div style={{ background: '#f5f5f3', borderBottom: '1px solid #e8e8e6', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ display: 'flex', gap: '6px' }}>
+                {['#ff5f57','#febc2e','#28c840'].map(c => <div key={c} style={{ width: '12px', height: '12px', borderRadius: '50%', background: c }} />)}
               </div>
-              <button className="btn btn-outline" style={{ fontSize: '13px', padding: '10px 18px', minHeight: '40px' }} onClick={reset}>
-                New Content
-              </button>
-            </div>
-
-            {/* Tabs */}
-            <div className="tabs-row" style={{ display: 'flex', gap: '6px', marginBottom: '24px', flexWrap: 'wrap' }}>
-              {TABS.map(t => (
-                <button key={t.id} className={`tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => setActiveTab(t.id)}>
-                  {t.label}
-                </button>
-              ))}
-            </div>
-
-            {/* HOOK */}
-            {activeTab === 'hook' && result.hook && (
-              <div className="fade-up">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
-                  <div>
-                    <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '2px' }}>Viral Hook</div>
-                    <div style={{ fontSize: '12px', color: 'var(--muted)' }}>Use as your opening line on any platform</div>
-                  </div>
-                  <CopyBtn text={result.hook} label="hook" />
-                </div>
-                <div className="hook-block">{result.hook}</div>
-                <ShareButtons content={result.hook} type="hook" />
+              <div style={{ flex: 1, background: '#e8e8e6', borderRadius: '6px', padding: '4px 12px', fontSize: '11px', color: '#9a9a94', fontFamily: 'monospace', maxWidth: '300px', margin: '0 auto' }}>
+                fury.swiftlab.dev
               </div>
-            )}
-
-            {/* TWEETS */}
-            {activeTab === 'tweets' && result.tweets && (
-              <div className="fade-up">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
-                  <div>
-                    <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '2px' }}>X / Twitter Thread</div>
-                    <div style={{ fontSize: '12px', color: 'var(--muted)' }}>5 tweets — post as a thread for maximum reach</div>
-                  </div>
-                  <CopyBtn text={result.tweets.join('\n\n')} label="full thread" />
+            </div>
+            {/* Mock content */}
+            <div style={{ padding: '32px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div style={{ background: '#fafaf9', borderRadius: '10px', padding: '20px', border: '1px solid #e8e8e6' }}>
+                <div style={{ fontSize: '11px', color: '#9a9a94', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '10px' }}>Input</div>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', background: '#fff', border: '1px solid #e8e8e6', borderRadius: '8px', padding: '10px 14px' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a9a94" strokeWidth="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.5C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
+                  <span style={{ fontSize: '13px', color: '#4a4a46' }}>youtube.com/watch?v=...</span>
                 </div>
-                {result.tweets.map((tweet, i) => (
-                  <div key={i} className="tweet-block fade-up" style={{ animationDelay: `${i * 0.07}s` }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
-                      <div className="tweet-num">Tweet {i + 1} of {result.tweets.length}</div>
-                      <CopyBtn text={tweet} label={`tweet ${i + 1}`} />
+                <div style={{ textAlign: 'center', margin: '16px 0', fontSize: '20px', color: '#d4d4d0' }}>↓</div>
+                <div style={{ fontSize: '11px', color: '#9a9a94', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>Generating...</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  {['Hook','Tweets','LinkedIn','Blog','Newsletter','Summary'].map((f, i) => (
+                    <div key={f} style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: 1 - i * 0.1 }}>
+                      <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#1a1a18', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20,6 9,17 4,12"/></svg>
+                      </div>
+                      <span style={{ fontSize: '12px', color: '#4a4a46' }}>{f}</span>
                     </div>
-                    <p style={{ fontSize: '14px', color: 'var(--sub)', lineHeight: 1.75 }}>{tweet}</p>
-                    <p className={`char-count ${tweet.length > 280 ? 'char-over' : ''}`}>{tweet.length} / 280</p>
+                  ))}
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {[
+                  ['Hook', 'This creator made $2M without showing his face — and here\'s exactly how he did it.'],
+                  ['Tweet 1', 'Most creators think followers = income. Wrong. This channel proved that 100K engaged subscribers beat 10M passive ones every time.'],
+                  ['LinkedIn', 'I analyzed 50 faceless YouTube channels this month and found something nobody talks about...'],
+                ].map(([label, text]) => (
+                  <div key={label} style={{ background: '#fafaf9', border: '1px solid #e8e8e6', borderRadius: '10px', padding: '14px' }}>
+                    <div style={{ fontSize: '9px', color: '#9a9a94', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '6px' }}>{label}</div>
+                    <p style={{ fontSize: '12px', color: '#4a4a46', lineHeight: 1.6 }}>{text}</p>
                   </div>
                 ))}
-                <ShareButtons content={result.tweets[0]} type="tweet" />
               </div>
-            )}
-
-            {/* LINKEDIN */}
-            {activeTab === 'linkedin' && result.linkedin && (
-              <div className="fade-up">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
-                  <div>
-                    <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '2px' }}>LinkedIn Post</div>
-                    <div style={{ fontSize: '12px', color: 'var(--muted)' }}>300–500 words with hashtags</div>
-                  </div>
-                  <CopyBtn text={result.linkedin} label="LinkedIn post" />
-                </div>
-                <div className="out">{result.linkedin}</div>
-                <ShareButtons content={result.linkedin} type="linkedin" />
-              </div>
-            )}
-
-            {/* BLOG */}
-            {activeTab === 'blog' && result.blog && (
-              <div className="fade-up">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
-                  <div>
-                    <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '2px' }}>SEO Blog Article</div>
-                    <div style={{ fontSize: '12px', color: 'var(--muted)' }}>600–900 words ready to publish</div>
-                  </div>
-                  <CopyBtn text={result.blog} label="blog article" />
-                </div>
-                <div className="out">{result.blog}</div>
-              </div>
-            )}
-
-            {/* NEWSLETTER */}
-            {activeTab === 'newsletter' && result.newsletter && (
-              <div className="fade-up">
-                <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '14px' }}>Newsletter</div>
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <div style={{ fontSize: '12px', color: 'var(--muted)', fontWeight: 500 }}>Subject Line</div>
-                  <CopyBtn text={result.newsletter.subject} label="subject line" />
-                </div>
-                <div className="subject-box">{result.newsletter.subject}</div>
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <div style={{ fontSize: '12px', color: 'var(--muted)', fontWeight: 500 }}>Email Body</div>
-                  <CopyBtn text={result.newsletter.body} label="newsletter body" />
-                </div>
-                <div className="out">{result.newsletter.body}</div>
-              </div>
-            )}
-
-            {/* SUMMARY */}
-            {activeTab === 'summary' && (
-              <div className="fade-up">
-                {result.summary && (
-                  <>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
-                      <div>
-                        <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '2px' }}>Content Summary</div>
-                        <div style={{ fontSize: '12px', color: 'var(--muted)' }}>Key ideas from the source</div>
-                      </div>
-                      <CopyBtn text={result.summary} label="summary" />
-                    </div>
-                    <div className="out">{result.summary}</div>
-                  </>
-                )}
-                {transcript && (
-                  <>
-                    <div className="divider" />
-                    <details>
-                      <summary style={{ fontSize: '12px', color: 'var(--muted)', cursor: 'pointer', fontFamily: 'JetBrains Mono', textTransform: 'uppercase', letterSpacing: '0.1em', userSelect: 'none', padding: '4px 0' }}>
-                        View source transcript
-                      </summary>
-                      <div className="out" style={{ marginTop: '12px', fontSize: '12px', maxHeight: '300px', overflowY: 'auto', color: 'var(--muted)', lineHeight: 1.7 }}>
-                        {transcript}
-                      </div>
-                    </details>
-                  </>
-                )}
-              </div>
-            )}
+            </div>
           </div>
-        )}
+        </section>
+
+        {/* HOW IT WORKS */}
+        <section style={{ paddingBottom: '80px' }}>
+          <h2 style={{ fontSize: 'clamp(28px,4vw,42px)', fontWeight: 600, letterSpacing: '-0.03em', marginBottom: '48px', textAlign: 'center' }}>How it works</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: '24px' }}>
+            {STEPS.map(([num, title, desc]) => (
+              <div key={num} style={{ padding: '32px', background: '#fff', border: '1px solid #e8e8e6', borderRadius: '14px' }}>
+                <div style={{ fontFamily: 'monospace', fontSize: '12px', color: '#9a9a94', marginBottom: '16px', letterSpacing: '0.05em' }}>{num}</div>
+                <h3 style={{ fontSize: '17px', fontWeight: 600, marginBottom: '10px', letterSpacing: '-0.01em' }}>{title}</h3>
+                <p style={{ fontSize: '14px', color: '#4a4a46', lineHeight: 1.7 }}>{desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* FEATURES */}
+        <section style={{ paddingBottom: '80px' }}>
+          <h2 style={{ fontSize: 'clamp(28px,4vw,42px)', fontWeight: 600, letterSpacing: '-0.03em', marginBottom: '12px', textAlign: 'center' }}>Six formats. One click.</h2>
+          <p style={{ textAlign: 'center', color: '#9a9a94', fontSize: '15px', marginBottom: '48px' }}>Everything you need to repurpose a single piece of content across every platform.</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: '16px' }}>
+            {FEATURES.map(([title, desc]) => (
+              <div key={title} style={{ padding: '24px', background: '#fff', border: '1px solid #e8e8e6', borderRadius: '12px' }}>
+                <div style={{ width: '6px', height: '6px', background: '#1a1a18', borderRadius: '50%', marginBottom: '14px' }} />
+                <h3 style={{ fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>{title}</h3>
+                <p style={{ fontSize: '13px', color: '#9a9a94', lineHeight: 1.65 }}>{desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* PRICING */}
+        <section style={{ paddingBottom: '80px' }}>
+          <h2 style={{ fontSize: 'clamp(28px,4vw,42px)', fontWeight: 600, letterSpacing: '-0.03em', marginBottom: '48px', textAlign: 'center' }}>Simple pricing</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: '20px', maxWidth: '640px', margin: '0 auto' }}>
+            {/* Free */}
+            <div style={{ padding: '36px', background: '#fff', border: '1px solid #e8e8e6', borderRadius: '16px' }}>
+              <div style={{ fontSize: '11px', color: '#9a9a94', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '12px' }}>Free</div>
+              <div style={{ fontSize: '42px', fontWeight: 600, letterSpacing: '-0.03em', marginBottom: '4px' }}>$0</div>
+              <div style={{ fontSize: '13px', color: '#9a9a94', marginBottom: '28px' }}>forever</div>
+              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '28px' }}>
+                {['5 repurposes per day', 'All 6 formats', 'YouTube + text input', 'Content history (7 days)'].map(f => (
+                  <li key={f} style={{ display: 'flex', gap: '10px', fontSize: '13.5px', color: '#4a4a46', alignItems: 'flex-start' }}>
+                    <span style={{ color: '#1a1a18', flexShrink: 0, marginTop: '2px' }}>—</span>{f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/signup" style={{ display: 'block', textAlign: 'center', padding: '12px', borderRadius: '9px', border: '1px solid #e8e8e6', color: '#4a4a46', textDecoration: 'none', fontSize: '14px', fontWeight: 500 }}>
+                Try Fury Free
+              </Link>
+            </div>
+            {/* Pro */}
+            <div style={{ padding: '36px', background: '#1a1a18', border: '1px solid #1a1a18', borderRadius: '16px', color: '#fff', position: 'relative' }}>
+              <div style={{ position: 'absolute', top: '16px', right: '16px', background: '#fff', color: '#1a1a18', fontSize: '10px', fontWeight: 600, padding: '3px 10px', borderRadius: '999px', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Popular</div>
+              <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '12px' }}>Pro</div>
+              <div style={{ fontSize: '42px', fontWeight: 600, letterSpacing: '-0.03em', marginBottom: '4px' }}>₦3,000</div>
+              <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '28px' }}>per month</div>
+              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '28px' }}>
+                {['Unlimited repurposes', 'All 6 formats', 'AI cover image generation', 'Full content history', 'Priority generation', 'Early access to new features'].map(f => (
+                  <li key={f} style={{ display: 'flex', gap: '10px', fontSize: '13.5px', color: 'rgba(255,255,255,0.8)', alignItems: 'flex-start' }}>
+                    <span style={{ color: '#fff', flexShrink: 0, marginTop: '2px' }}>+</span>{f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/signup" style={{ display: 'block', textAlign: 'center', padding: '12px', borderRadius: '9px', background: '#fff', color: '#1a1a18', textDecoration: 'none', fontSize: '14px', fontWeight: 600 }}>
+                Get Pro
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section style={{ paddingBottom: '96px' }}>
+          <div style={{ background: '#1a1a18', borderRadius: '20px', padding: '64px 40px', textAlign: 'center', color: '#fff' }}>
+            <h2 style={{ fontSize: 'clamp(28px,5vw,52px)', fontWeight: 600, letterSpacing: '-0.03em', marginBottom: '16px' }}>
+              Your next 6 posts are<br />30 seconds away.
+            </h2>
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '16px', marginBottom: '36px', maxWidth: '440px', margin: '0 auto 36px' }}>
+              Stop spending hours writing content. Paste one link and let Fury do the work.
+            </p>
+            <Link href="/signup" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#fff', color: '#1a1a18', padding: '14px 32px', borderRadius: '10px', fontSize: '15px', fontWeight: 600, textDecoration: 'none' }}>
+              Try Fury Free
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </Link>
+          </div>
+        </section>
       </div>
 
       {/* FOOTER */}
-      <footer style={{ borderTop: '1px solid var(--border)', padding: '24px 20px' }}>
-        <div style={{ maxWidth: '760px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-          <div className="swift-badge">
-            <div style={{ width: '18px', height: '18px', background: 'var(--text)', borderRadius: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-              </svg>
+      <footer style={{ borderTop: '1px solid #e8e8e6', padding: '24px', background: '#fafaf9' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ width: '20px', height: '20px', background: '#1a1a18', borderRadius: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
             </div>
-            Fury by Swift Lab — Your content is never stored.
+            <span style={{ fontSize: '13px', fontWeight: 600 }}>Fury</span>
+            <span style={{ fontSize: '11px', color: '#9a9a94' }}>by Swift Lab</span>
           </div>
+          <p style={{ fontSize: '12px', color: '#9a9a94' }}>Your content is never stored without your permission.</p>
+          <p style={{ fontSize: '12px', color: '#9a9a94' }}>© 2026 Swift Lab</p>
         </div>
       </footer>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+        @media(max-width:640px) {
+          nav { padding: 0 16px; }
+          section { padding-left: 0 !important; padding-right: 0 !important; }
+        }
+      `}</style>
     </main>
   )
 }
