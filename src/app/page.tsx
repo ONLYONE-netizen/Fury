@@ -46,6 +46,7 @@ export default function FuryApp() {
   const [videoTitle, setVideoTitle] = useState('')
   const [imgUrl, setImgUrl]       = useState('')
   const [imgLoading, setImgLoading] = useState(false)
+  const [imgError, setImgError]   = useState('')
   const [showImage, setShowImage] = useState(false)
   const [history, setHistory]     = useState<HistoryItem[]>([])
   const [showHistory, setShowHistory] = useState(false)
@@ -96,7 +97,7 @@ export default function FuryApp() {
         content = text.trim(); transcriptAvailable = true
       }
 
-      setProg(60); setProgLabel('Generating with Gemini AI...')
+      setProg(60); setProgLabel('Fury AI is writing your content...')
       const res  = await fetch('/api/repurpose', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content, title, author }) })
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'Generation failed'); setBusy(false); return }
@@ -115,11 +116,18 @@ export default function FuryApp() {
   const generateImage = async () => {
     if (!result?.imagePrompt) return
     setImgLoading(true)
+    setImgError('')
     try {
       const res  = await fetch('/api/image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: result.imagePrompt }) })
       const data = await res.json()
-      if (data.imageUrl) setImgUrl(data.imageUrl)
-    } catch {}
+      if (data.imageUrl) {
+        setImgUrl(data.imageUrl)
+      } else {
+        setImgError(data.error || 'Image generation failed. Try again.')
+      }
+    } catch {
+      setImgError('Could not reach the image service. Try again.')
+    }
     setImgLoading(false)
   }
 
@@ -131,7 +139,7 @@ export default function FuryApp() {
     } catch {}
   }
 
-  const reset = () => { setResult(null); setUrl(''); setText(''); setError(''); setVideoTitle(''); setImgUrl(''); setProg(0); setShowImage(false) }
+  const reset = () => { setResult(null); setUrl(''); setText(''); setError(''); setVideoTitle(''); setImgUrl(''); setImgError(''); setProg(0); setShowImage(false) }
 
   const S = {
     inp: { width: '100%', padding: '12px 16px', border: '1px solid #e8e8e6', borderRadius: '10px', fontSize: '14px', outline: 'none', fontFamily: 'Inter, sans-serif', background: '#fff', color: '#1a1a18' } as React.CSSProperties,
@@ -290,7 +298,10 @@ export default function FuryApp() {
                 <h2 style={{ fontSize: '18px', fontWeight: 600, letterSpacing: '-0.02em' }}>Content Ready</h2>
                 {videoTitle && <p style={{ color: '#9a9a94', fontSize: '12px', marginTop: '2px' }}>{videoTitle}</p>}
               </div>
-              <button onClick={reset} style={{ ...S.btn, background: 'transparent', border: '1px solid #e8e8e6', color: '#9a9a94', padding: '7px 14px', fontSize: '13px' }}>New Content</button>
+              <button onClick={reset}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1a1a18'; (e.currentTarget as HTMLElement).style.color = '#1a1a18'; (e.currentTarget as HTMLElement).style.boxShadow = '0 2px 6px rgba(0,0,0,0.08)' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#e8e8e6'; (e.currentTarget as HTMLElement).style.color = '#4a4a46'; (e.currentTarget as HTMLElement).style.boxShadow = '0 1px 2px rgba(0,0,0,0.04)' }}
+                style={{ ...S.btn, background: '#fff', border: '1px solid #e8e8e6', color: '#4a4a46', padding: '7px 14px', fontSize: '13px', boxShadow: '0 1px 2px rgba(0,0,0,0.04)', cursor: 'pointer', transition: 'all 0.15s' }}>New Content</button>
             </div>
 
             {/* Format tabs */}
@@ -322,6 +333,7 @@ export default function FuryApp() {
                   </button>
                 )}
               </div>
+              {imgError && <p style={{ fontSize: '11px', color: '#dc2626', marginTop: '10px' }}>{imgError}</p>}
               {imgUrl && (
                 <div>
                   <img src={imgUrl} alt="Generated cover" style={{ width: '100%', borderRadius: '8px', display: 'block', marginBottom: '10px' }} />
@@ -346,7 +358,7 @@ export default function FuryApp() {
                 <span style={{ fontSize: '13px' }}>{tool.icon}</span>
                 <span style={{ fontSize: '12px', fontWeight: 500, color: '#1a1a18', whiteSpace: 'nowrap' }}>{tool.name}</span>
                 {tool.active
-                  ? <span style={{ fontSize: '9px', fontWeight: 600, padding: '2px 6px', borderRadius: '99px', background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.06em' }}>● Live</span>
+                  ? <span style={{ fontSize: '9px', fontWeight: 600, padding: '2px 6px', borderRadius: '99px', background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.06em' }}>New</span>
                   : <span style={{ fontSize: '9px', fontWeight: 600, padding: '2px 6px', borderRadius: '99px', background: '#f5f5f3', color: '#b0b0aa', border: '1px solid #e8e8e6', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Soon</span>
                 }
               </div>
