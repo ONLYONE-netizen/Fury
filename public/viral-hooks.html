@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>30 Viral Hook Templates — Swift Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0f0f0f;
+  --surface: #161616;
+  --card: #1c1c1c;
+  --border: #282828;
+  --yellow: #ffff00;
+  --yellow-dim: rgba(255,255,0,0.12);
+  --yellow-border: rgba(255,255,0,0.25);
+  --white: #f5f5f5;
+  --muted: #666666;
+  --text: #e0e0e0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #0f0f0f; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { page-break-after: always; min-height: 100vh; }
+}
+
+/* ── PRINT BAR ── */
+.print-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: #111;
+  border-bottom: 1px solid var(--border);
+  padding: 0.8rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 999;
+}
+.print-bar-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-family: 'Syne', sans-serif;
+}
+.print-btn {
+  background: var(--yellow);
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  padding: 0.55rem 1.2rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 0.8rem;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+}
+
+/* ── DOC ── */
+.doc {
+  max-width: 860px;
+  margin: 0 auto;
+  padding-top: 4rem;
+}
+
+.page {
+  background: var(--bg);
+  min-height: 100vh;
+  padding: 3.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ══════════════════
+   COVER PAGE
+══════════════════ */
+.cover {
+  justify-content: space-between;
+}
+
+.cover-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.cover-brand {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--yellow);
+}
+
+.cover-tag {
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+.cover-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.cover-number {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(7rem, 15vw, 11rem);
+  font-weight: 800;
+  color: var(--yellow);
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+  margin-bottom: 1rem;
+}
+
+.cover-heading {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--white);
+  margin-bottom: 1.2rem;
+}
+
+.cover-sub {
+  font-size: 0.95rem;
+  color: var(--muted);
+  max-width: 420px;
+  line-height: 1.75;
+  font-style: italic;
+}
+
+.cover-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.cover-cats {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.cat-pill {
+  font-size: 0.65rem;
+  color: #000;
+  background: var(--yellow);
+  padding: 0.2rem 0.6rem;
+  border-radius: 100px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-family: 'Syne', sans-serif;
+}
+
+.cover-url {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+/* ══════════════════
+   SECTION DIVIDER
+══════════════════ */
+.section-div {
+  justify-content: flex-end;
+  padding-bottom: 4rem;
+}
+
+.section-bg-num {
+  position: absolute;
+  top: -2rem;
+  right: -1rem;
+  font-family: 'Syne', sans-serif;
+  font-size: 18rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  line-height: 1;
+  letter-spacing: -0.08em;
+  pointer-events: none;
+  user-select: none;
+}
+
+.section-content {
+  position: relative;
+  z-index: 1;
+}
+
+.section-eyebrow {
+  font-size: 0.7rem;
+  color: var(--yellow);
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  font-family: 'Syne', sans-serif;
+}
+
+.section-heading {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 3.8rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 1rem;
+}
+
+.section-desc {
+  font-size: 0.9rem;
+  color: var(--muted);
+  max-width: 440px;
+  line-height: 1.75;
+  border-left: 2px solid var(--yellow);
+  padding-left: 1rem;
+}
+
+/* ══════════════════
+   HOOKS PAGE
+══════════════════ */
+.hooks-page {
+  gap: 0;
+}
+
+.hooks-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.hooks-cat {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  color: var(--yellow);
+  font-weight: 700;
+}
+
+.hooks-range {
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
+/* Hook row: template left, phone right */
+.hook-row {
+  display: grid;
+  grid-template-columns: 1fr 160px;
+  gap: 1.5rem;
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+}
+
+.hook-row:last-child { border-bottom: none; }
+
+.hook-left {}
+
+.hook-index {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: var(--yellow);
+  letter-spacing: 0.12em;
+  margin-bottom: 0.5rem;
+}
+
+.hook-template-text {
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+}
+
+.hook-template-text .blank {
+  color: var(--yellow);
+  font-weight: 600;
+  font-style: normal;
+  background: rgba(255,255,0,0.08);
+  padding: 0 2px;
+  border-radius: 3px;
+}
+
+.hook-use-label {
+  font-size: 0.62rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.hook-use-text {
+  font-size: 0.78rem;
+  color: #888;
+  font-style: italic;
+}
+
+/* ── PHONE MOCKUP ── */
+.phone-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.phone-label {
+  font-size: 0.58rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+.phone {
+  width: 140px;
+  background: #1a1a1a;
+  border-radius: 18px;
+  border: 1.5px solid #333;
+  overflow: hidden;
+  position: relative;
+}
+
+.phone-notch {
+  height: 6px;
+  background: #111;
+  border-radius: 0 0 6px 6px;
+  width: 40px;
+  margin: 0 auto 0;
+}
+
+.phone-screen {
+  padding: 0.6rem;
+  background: #111;
+}
+
+/* Twitter/X post in phone */
+.phone-post {
+  background: #000;
+  border-radius: 10px;
+  padding: 0.6rem;
+  border: 0.5px solid #2a2a2a;
+}
+
+.phone-post-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.phone-avatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--yellow);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.45rem;
+  font-weight: 800;
+  color: #000;
+  font-family: 'Syne', sans-serif;
+}
+
+.phone-handle {
+  font-size: 0.55rem;
+  color: #888;
+  line-height: 1.2;
+}
+
+.phone-handle strong {
+  color: #fff;
+  display: block;
+  font-size: 0.6rem;
+}
+
+.phone-post-text {
+  font-size: 0.58rem;
+  color: #ddd;
+  line-height: 1.5;
+  margin-bottom: 0.4rem;
+  word-break: break-word;
+}
+
+.phone-post-text .highlight {
+  color: var(--yellow);
+}
+
+.phone-post-footer {
+  display: flex;
+  gap: 0.6rem;
+  padding-top: 0.3rem;
+  border-top: 0.5px solid #222;
+}
+
+.phone-action {
+  font-size: 0.5rem;
+  color: #555;
+}
+
+/* ══════════════════
+   RULES / BACK
+══════════════════ */
+.rules-page {
+  gap: 2rem;
+}
+
+.rules-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.4rem;
+}
+
+.rules-title span { color: var(--yellow); }
+
+.rules-sub {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+.rule-compare {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.rule-compare-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--yellow);
+  margin-bottom: 0.8rem;
+}
+
+.compare-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.compare-bad, .compare-good {
+  border-radius: 8px;
+  padding: 0.8rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.compare-bad {
+  background: rgba(255,80,80,0.08);
+  border: 1px solid rgba(255,80,80,0.2);
+  color: #ff8080;
+}
+
+.compare-good {
+  background: rgba(255,255,0,0.06);
+  border: 1px solid rgba(255,255,0,0.2);
+  color: var(--yellow);
+}
+
+.compare-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.4rem;
+  opacity: 0.7;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
+.stat-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.2rem;
+  text-align: center;
+}
+
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--yellow);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* BACK COVER */
+.back-cover {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 2rem;
+}
+
+.back-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  color: var(--white);
+}
+
+.back-logo span { color: var(--yellow); }
+
+.back-divider {
+  width: 40px;
+  height: 2px;
+  background: var(--yellow);
+  margin: 0 auto;
+}
+
+.back-tagline {
+  font-size: 1rem;
+  color: var(--muted);
+  max-width: 380px;
+  line-height: 1.75;
+}
+
+.back-cta {
+  display: inline-block;
+  background: var(--yellow);
+  color: #000;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 0.85rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  letter-spacing: 0.03em;
+}
+
+.back-url {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+</style>
+</head>
+<body>
+
+<div class="print-bar no-print">
+  <span class="print-bar-label">30 Viral Hook Templates · Swift Lab</span>
+  <button class="print-btn" onclick="window.print()">Download PDF →</button>
+</div>
+
+<div class="doc">
+
+<!-- COVER -->
+<div class="page cover">
+  <div class="cover-top">
+    <span class="cover-brand">SWIFT LAB</span>
+    <span class="cover-tag">Free Resource · 2026</span>
+  </div>
+  <div class="cover-hero">
+    <div class="cover-number">30</div>
+    <h1 class="cover-heading">Viral Hook<br>Templates</h1>
+    <p class="cover-sub">Stop-the-scroll hooks for faceless creators who want to grow on every platform without showing their face.</p>
+  </div>
+  <div class="cover-bottom">
+    <div class="cover-cats">
+      <span class="cat-pill">CURIOSITY</span>
+      <span class="cat-pill">CONTROVERSY</span>
+      <span class="cat-pill">RESULTS</span>
+      <span class="cat-pill">STORY</span>
+      <span class="cat-pill">LIST</span>
+    </div>
+    <span class="cover-url">fury-six.vercel.app</span>
+  </div>
+</div>
+
+<!-- SECTION 1 -->
+<div class="page section-div">
+  <div class="section-bg-num">01</div>
+  <div class="section-content">
+    <p class="section-eyebrow">CATEGORY ONE · HOOKS 01–06</p>
+    <h2 class="section-heading">Curiosity<br>Hooks</h2>
+    <p class="section-desc">Tease information without giving it away. Make viewers feel they must keep watching to get the full picture.</p>
+  </div>
+</div>
+
+<!-- HOOKS 1-3 -->
+<div class="page hooks-page">
+  <div class="hooks-header">
+    <span class="hooks-cat">CURIOSITY HOOKS</span>
+    <span class="hooks-range">01 — 03</span>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 01</p>
+      <p class="hook-template-text">I discovered why <span class="blank">[type of channel]</span> keeps getting <span class="blank">[result]</span> — and it has almost nothing to do with <span class="blank">[obvious assumption]</span>.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Revealing an unexpected growth factor.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">I discovered why <span class="highlight">faceless channels</span> keep getting millions of views — and it has almost nothing to do with expensive editing.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 24</span>
+              <span class="phone-action">🔁 89</span>
+              <span class="phone-action">❤️ 412</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 02</p>
+      <p class="hook-template-text">Most creators are doing <span class="blank">[common action]</span>. The creators getting <span class="blank">[result]</span> are doing <span class="blank">[unexpected action]</span> instead.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Challenging a common creator habit.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">Most creators are posting more videos. The channels hitting <span class="highlight">100K+ views</span> are improving their first 10 seconds instead.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 31</span>
+              <span class="phone-action">🔁 104</span>
+              <span class="phone-action">❤️ 560</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 03</p>
+      <p class="hook-template-text">What if you could turn <span class="blank">[one piece of content]</span> into <span class="blank">[number]</span> pieces of content without <span class="blank">[painful task]</span>?</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Introducing content repurposing.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">What if you could turn <span class="highlight">one YouTube video</span> into 6 pieces of content without spending 3 hours rewriting it?</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 58</span>
+              <span class="phone-action">🔁 201</span>
+              <span class="phone-action">❤️ 887</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+</div>
+
+<!-- HOOKS 4-6 -->
+<div class="page hooks-page">
+  <div class="hooks-header">
+    <span class="hooks-cat">CURIOSITY HOOKS</span>
+    <span class="hooks-range">04 — 06</span>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 04</p>
+      <p class="hook-template-text">I analyzed <span class="blank">[number]</span> <span class="blank">[videos/channels/posts]</span>. One pattern kept appearing: <span class="blank">[unexpected insight]</span>.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Sharing research or analysis.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">I analyzed <span class="highlight">100 faceless channels</span>. One pattern kept appearing: the best videos weren't the most polished.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 44</span>
+              <span class="phone-action">🔁 132</span>
+              <span class="phone-action">❤️ 621</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 05</p>
+      <p class="hook-template-text">There's a reason your <span class="blank">[content type]</span> gets <span class="blank">[low result]</span> while <span class="blank">[other content]</span> gets <span class="blank">[high result]</span>. It's probably <span class="blank">[hidden reason]</span>.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Explaining a performance gap.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">Why your Shorts get <span class="highlight">500 views</span> while your long-form gets 50K. It's probably not the algorithm.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 67</span>
+              <span class="phone-action">🔁 198</span>
+              <span class="phone-action">❤️ 944</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 06</p>
+      <p class="hook-template-text">I wouldn't start a faceless <span class="blank">[niche]</span> channel today until I checked these <span class="blank">[number]</span> things.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Creating curiosity around a niche or strategy.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">I wouldn't start a <span class="highlight">faceless finance channel</span> today until I checked these 3 things.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 29</span>
+              <span class="phone-action">🔁 88</span>
+              <span class="phone-action">❤️ 403</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2 -->
+<div class="page section-div">
+  <div class="section-bg-num">02</div>
+  <div class="section-content">
+    <p class="section-eyebrow">CATEGORY TWO · HOOKS 07–12</p>
+    <h2 class="section-heading">Controversy<br>Hooks</h2>
+    <p class="section-desc">Challenge what viewers believe. Force them to agree strongly or push back — both drive engagement.</p>
+  </div>
+</div>
+
+<!-- HOOKS 7-9 -->
+<div class="page hooks-page">
+  <div class="hooks-header">
+    <span class="hooks-cat">CONTROVERSY HOOKS</span>
+    <span class="hooks-range">07 — 09</span>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 07</p>
+      <p class="hook-template-text">Unpopular opinion: <span class="blank">[common creator advice]</span> is terrible advice for <span class="blank">[specific creator]</span>.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Challenging popular creator advice.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">Unpopular opinion: <span class="highlight">"Post consistently"</span> is terrible advice for a faceless creator with no audience yet.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 91</span>
+              <span class="phone-action">🔁 244</span>
+              <span class="phone-action">❤️ 1.2K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 08</p>
+      <p class="hook-template-text">Stop <span class="blank">[common creator behavior]</span>. It feels productive, but it's keeping your <span class="blank">[channel/account]</span> stuck at <span class="blank">[result]</span>.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Calling out a costly mistake.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">Stop perfecting thumbnails. It feels productive. But your <span class="highlight">weak topic</span> is what's keeping your channel stuck.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 77</span>
+              <span class="phone-action">🔁 211</span>
+              <span class="phone-action">❤️ 1.1K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 09</p>
+      <p class="hook-template-text">Your <span class="blank">[content problem]</span> probably isn't because of <span class="blank">[popular excuse]</span>. It's because of <span class="blank">[real problem]</span>.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Reframing a creator's problem.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">Your channel isn't failing because of <span class="highlight">the algorithm</span>. It's because nobody has a reason to click.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 103</span>
+              <span class="phone-action">🔁 389</span>
+              <span class="phone-action">❤️ 2.1K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+</div>
+
+<!-- HOOKS 10-12 -->
+<div class="page hooks-page">
+  <div class="hooks-header">
+    <span class="hooks-cat">CONTROVERSY HOOKS</span>
+    <span class="hooks-range">10 — 12</span>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 10</p>
+      <p class="hook-template-text">Creators don't need more <span class="blank">[tool/tactic]</span>. They need more <span class="blank">[fundamental skill]</span>.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Discussing AI, tools or creator productivity.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">Creators don't need another <span class="highlight">AI writing tool</span>. They need to get better at finding ideas people already want.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 55</span>
+              <span class="phone-action">🔁 177</span>
+              <span class="phone-action">❤️ 834</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 11</p>
+      <p class="hook-template-text">Hot take: <span class="blank">[popular strategy]</span> is becoming useless for <span class="blank">[creator type]</span>.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Discussing changing creator trends.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">Hot take: <span class="highlight">generic AI content</span> is becoming useless for faceless creators. Here's why.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 88</span>
+              <span class="phone-action">🔁 265</span>
+              <span class="phone-action">❤️ 1.4K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 12</p>
+      <p class="hook-template-text">If your content depends on <span class="blank">[bad strategy]</span>, you're not building an audience. You're building <span class="blank">[negative outcome]</span>.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Teaching sustainable audience growth.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">If your content depends on <span class="highlight">trends alone</span>, you're not building an audience. You're building temporary traffic.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 62</span>
+              <span class="phone-action">🔁 190</span>
+              <span class="phone-action">❤️ 921</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 3 -->
+<div class="page section-div">
+  <div class="section-bg-num">03</div>
+  <div class="section-content">
+    <p class="section-eyebrow">CATEGORY THREE · HOOKS 13–18</p>
+    <h2 class="section-heading">Results &<br>Achievement</h2>
+    <p class="section-desc">Lead with proof. Numbers and transformations build credibility instantly — viewers stay to learn how.</p>
+  </div>
+</div>
+
+<!-- HOOKS 13-15 -->
+<div class="page hooks-page">
+  <div class="hooks-header">
+    <span class="hooks-cat">RESULTS / ACHIEVEMENT HOOKS</span>
+    <span class="hooks-range">13 — 15</span>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 13</p>
+      <p class="hook-template-text"><span class="blank">[Time period]</span> ago, <span class="blank">[channel/account]</span> had <span class="blank">[starting result]</span>. Today: <span class="blank">[achievement]</span>. Here's what changed.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Sharing a transformation or case study.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">6 months ago: <span class="highlight">0 subscribers</span>. Today: 100K+. One faceless channel. Here's exactly what changed.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 114</span>
+              <span class="phone-action">🔁 432</span>
+              <span class="phone-action">❤️ 2.8K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 14</p>
+      <p class="hook-template-text">We tested <span class="blank">[number]</span> <span class="blank">[videos/posts]</span> and discovered <span class="blank">[result]</span>. Here's the strategy that won.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Sharing experiments.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">We tested <span class="highlight">30 YouTube hooks</span> and discovered one format consistently outperformed everything else.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 79</span>
+              <span class="phone-action">🔁 281</span>
+              <span class="phone-action">❤️ 1.6K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 15</p>
+      <p class="hook-template-text">From <span class="blank">[starting point]</span> → <span class="blank">[achievement]</span> using <span class="blank">[strategy]</span>. No <span class="blank">[common advantage]</span> required.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Showing a realistic growth path.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">From 0 → <span class="highlight">50K subscribers</span> using faceless videos. No camera, no brand, no expensive studio required.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 93</span>
+              <span class="phone-action">🔁 341</span>
+              <span class="phone-action">❤️ 2.2K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+</div>
+
+<!-- HOOKS 16-18 -->
+<div class="page hooks-page">
+  <div class="hooks-header">
+    <span class="hooks-cat">RESULTS / ACHIEVEMENT HOOKS</span>
+    <span class="hooks-range">16 — 18</span>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 16</p>
+      <p class="hook-template-text"><span class="blank">[Number]</span> views from one <span class="blank">[video/post]</span>. Here's exactly what made people stop scrolling.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Breaking down successful content.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text"><span class="highlight">2.4M views</span> from one faceless YouTube video. Here's exactly what made people click.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 156</span>
+              <span class="phone-action">🔁 621</span>
+              <span class="phone-action">❤️ 4.1K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 17</p>
+      <p class="hook-template-text">We turned <span class="blank">[one asset]</span> into <span class="blank">[number]</span> pieces of content and reached <span class="blank">[result]</span>. Here's the workflow.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Demonstrating content repurposing.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">We turned one YouTube video into <span class="highlight">6 posts</span> and hit 100K+ impressions. Here's the exact workflow.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 88</span>
+              <span class="phone-action">🔁 312</span>
+              <span class="phone-action">❤️ 1.9K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 18</p>
+      <p class="hook-template-text">This <span class="blank">[channel/system]</span> generated <span class="blank">[result]</span> with just <span class="blank">[resource/time]</span>. Here's the system behind it.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Revealing a repeatable system.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">This faceless channel hit <span class="highlight">1M views</span> with 3 uploads a week. Here's the system that made it possible.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 72</span>
+              <span class="phone-action">🔁 244</span>
+              <span class="phone-action">❤️ 1.5K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4 -->
+<div class="page section-div">
+  <div class="section-bg-num">04</div>
+  <div class="section-content">
+    <p class="section-eyebrow">CATEGORY FOUR · HOOKS 19–24</p>
+    <h2 class="section-heading">Story<br>Hooks</h2>
+    <p class="section-desc">Pull people in through narrative. Create emotional investment by teasing a journey — viewers stay to find out how it ends.</p>
+  </div>
+</div>
+
+<!-- HOOKS 19-21 -->
+<div class="page hooks-page">
+  <div class="hooks-header">
+    <span class="hooks-cat">STORY HOOKS</span>
+    <span class="hooks-range">19 — 21</span>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 19</p>
+      <p class="hook-template-text">I almost quit <span class="blank">[channel/project]</span> after <span class="blank">[failure]</span>. Then <span class="blank">[unexpected event]</span> happened.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Sharing a creator journey.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">I almost quit after <span class="highlight">27 videos flopped</span>. Then one upload changed everything. Here's what was different.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 134</span>
+              <span class="phone-action">🔁 488</span>
+              <span class="phone-action">❤️ 3.2K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 20</p>
+      <p class="hook-template-text"><span class="blank">[Time period]</span> ago, I had <span class="blank">[problem]</span>. I didn't have <span class="blank">[advantage]</span>. So I tried <span class="blank">[strategy]</span>.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Telling an origin story.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">A year ago I had <span class="highlight">no audience</span> and didn't want to show my face. So I built a faceless content system.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 97</span>
+              <span class="phone-action">🔁 301</span>
+              <span class="phone-action">❤️ 1.8K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 21</p>
+      <p class="hook-template-text">My <span class="blank">[video/post]</span> failed so badly that I thought <span class="blank">[reaction]</span>. Then I looked at the data.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Turning failure into a lesson.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">My video failed so badly I wanted to <span class="highlight">delete everything</span>. Then I looked at the retention graph. Lesson learned.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 81</span>
+              <span class="phone-action">🔁 267</span>
+              <span class="phone-action">❤️ 1.4K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+</div>
+
+<!-- HOOKS 22-24 -->
+<div class="page hooks-page">
+  <div class="hooks-header">
+    <span class="hooks-cat">STORY HOOKS</span>
+    <span class="hooks-range">22 — 24</span>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 22</p>
+      <p class="hook-template-text">Nobody watched my first <span class="blank">[number]</span> videos. Then I changed one thing: <span class="blank">[change]</span>.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Sharing a breakthrough moment.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">Nobody watched my first <span class="highlight">40 videos</span>. Then I changed one thing: writing the title before the script.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 109</span>
+              <span class="phone-action">🔁 398</span>
+              <span class="phone-action">❤️ 2.4K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 23</p>
+      <p class="hook-template-text">I spent <span class="blank">[time]</span> trying to <span class="blank">[goal]</span>. I finally realized I was solving the wrong problem.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Teaching through a personal mistake.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">I spent <span class="highlight">3 months</span> trying to grow. I finally realized I needed better ideas, not more uploads.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 76</span>
+              <span class="phone-action">🔁 223</span>
+              <span class="phone-action">❤️ 1.3K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 24</p>
+      <p class="hook-template-text">The weirdest thing happened after I posted <span class="blank">[content]</span>. <span class="blank">[Unexpected result]</span>. Here's what I learned.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Building narrative around a surprising result.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">The weirdest thing happened after I posted a <span class="highlight">7-minute faceless video</span>. It outperformed everything I made before.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 64</span>
+              <span class="phone-action">🔁 188</span>
+              <span class="phone-action">❤️ 1.1K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5 -->
+<div class="page section-div">
+  <div class="section-bg-num">05</div>
+  <div class="section-content">
+    <p class="section-eyebrow">CATEGORY FIVE · HOOKS 25–30</p>
+    <h2 class="section-heading">List &<br>Number Hooks</h2>
+    <p class="section-desc">Set clear expectations. Specificity builds trust — "7 things" always outperforms "some things."</p>
+  </div>
+</div>
+
+<!-- HOOKS 25-27 -->
+<div class="page hooks-page">
+  <div class="hooks-header">
+    <span class="hooks-cat">LIST / NUMBER HOOKS</span>
+    <span class="hooks-range">25 — 27</span>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 25</p>
+      <p class="hook-template-text"><span class="blank">[Number]</span> mistakes keeping your faceless YouTube channel from <span class="blank">[desired result]</span>:</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Creating educational posts or carousels.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text"><span class="highlight">5 mistakes</span> keeping your faceless channel stuck under 1,000 views: (thread 🧵)</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 122</span>
+              <span class="phone-action">🔁 445</span>
+              <span class="phone-action">❤️ 2.9K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 26</p>
+      <p class="hook-template-text">If I had to grow a faceless channel from <span class="blank">[starting point]</span> again, I'd do these <span class="blank">[number]</span> things first.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Sharing a practical roadmap.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">If I had to grow from <span class="highlight">0 subscribers</span> again, I'd do these 7 things first. Here they are:</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 88</span>
+              <span class="phone-action">🔁 311</span>
+              <span class="phone-action">❤️ 1.7K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 27</p>
+      <p class="hook-template-text"><span class="blank">[Number]</span> content ideas you can create from ONE <span class="blank">[video/podcast/interview]</span>.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Teaching content repurposing.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text"><span class="highlight">6 content ideas</span> you can create from ONE 30-minute YouTube video. Save this.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 66</span>
+              <span class="phone-action">🔁 244</span>
+              <span class="phone-action">❤️ 1.4K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+</div>
+
+<!-- HOOKS 28-30 -->
+<div class="page hooks-page">
+  <div class="hooks-header">
+    <span class="hooks-cat">LIST / NUMBER HOOKS</span>
+    <span class="hooks-range">28 — 30</span>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 28</p>
+      <p class="hook-template-text">The <span class="blank">[number]</span>-step system I use to turn <span class="blank">[input]</span> into <span class="blank">[output]</span>.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Explaining a repeatable workflow.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">The <span class="highlight">4-step system</span> I use to turn one YouTube video into a full week of social content.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 91</span>
+              <span class="phone-action">🔁 322</span>
+              <span class="phone-action">❤️ 1.8K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 29</p>
+      <p class="hook-template-text"><span class="blank">[Number]</span> things I'd fix before posting another <span class="blank">[content type]</span>.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Helping creators diagnose weak content.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text"><span class="highlight">7 things</span> I'd fix before posting another YouTube video with low retention.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 74</span>
+              <span class="phone-action">🔁 255</span>
+              <span class="phone-action">❤️ 1.5K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+
+  <div class="hook-row">
+    <div class="hook-left">
+      <p class="hook-index">HOOK 30</p>
+      <p class="hook-template-text">Want <span class="blank">[desired result]</span>? Start with these <span class="blank">[number]</span> creator fundamentals: <span class="blank">[1]</span>, <span class="blank">[2]</span>, <span class="blank">[3]</span>.</p>
+      <p class="hook-use-label">USE WHEN</p>
+      <p class="hook-use-text">Making a simple, high-value educational post.</p>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-post">
+            <div class="phone-post-header">
+              <div class="phone-avatar">SL</div>
+              <div class="phone-handle"><strong>Swift Lab</strong>@SwiftLab99713</div>
+            </div>
+            <p class="phone-post-text">Want <span class="highlight">more views</span>? Start with these 3 fundamentals: better ideas, stronger hooks, faster pacing.</p>
+            <div class="phone-post-footer">
+              <span class="phone-action">💬 58</span>
+              <span class="phone-action">🔁 199</span>
+              <span class="phone-action">❤️ 1.1K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="phone-label">EXAMPLE POST</span>
+    </div>
+  </div>
+</div>
+
+<!-- RULES PAGE -->
+<div class="page rules-page">
+  <div class="hooks-header">
+    <span class="hooks-cat">QUICK REFERENCE</span>
+    <span class="hooks-range">The Golden Rule</span>
+  </div>
+
+  <h2 class="rules-title">Don't make the blank <span>generic.</span></h2>
+  <p class="rules-sub">Specificity is the only thing that stops the scroll. Every bracket you fill should be the most concrete, specific version possible.</p>
+
+  <div class="rule-compare">
+    <p class="rule-compare-title">THE DIFFERENCE</p>
+    <div class="compare-row">
+      <div class="compare-bad">
+        <p class="compare-label">❌ WEAK</p>
+        "Here are 5 YouTube tips."
+      </div>
+      <div class="compare-good">
+        <p class="compare-label">✓ STRONG</p>
+        "5 mistakes keeping your faceless channel stuck under 1,000 views."
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-num">30</div>
+      <div class="stat-label">Hook templates across 5 categories</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Hook types that work on every platform</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Combinations when you fill the blanks specifically</div>
+    </div>
+  </div>
+</div>
+
+<!-- BACK COVER -->
+<div class="page back-cover">
+  <div class="back-logo">FURY<span>.</span></div>
+  <div class="back-divider"></div>
+  <p class="back-tagline">Paste any YouTube link. Get 6 pieces of content in 60 seconds. Twitter threads, LinkedIn posts, blog articles, newsletters and more. Free.</p>
+  <div>
+    <a class="back-cta" href="https://fury-six.vercel.app">Try Fury Free →</a>
+    <p class="back-url">fury-six.vercel.app · by Swift Lab 🇳🇬</p>
+  </div>
+</div>
+
+</div>
+<script>document.querySelector('.print-btn').onclick=()=>window.print();</script>
+</body>
+</html>

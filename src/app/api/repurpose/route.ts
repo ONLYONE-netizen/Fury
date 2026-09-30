@@ -1,17 +1,12 @@
 import { NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
-import { createClient } from '@supabase/supabase-js'
 
-const genAI    = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 
 export async function POST(req: Request) {
   try {
-    const { content, title, author, transcriptAvailable, userId } = await req.json()
-
-    if (!content?.trim()) {
-      return NextResponse.json({ error: 'No content provided' }, { status: 400 })
-    }
+    const { content, title, author, transcriptAvailable } = await req.json()
+    if (!content?.trim()) return NextResponse.json({ error: 'No content provided' }, { status: 400 })
 
     const model = genAI.getGenerativeModel({
       model: 'gemini-2.5-flash',
@@ -64,7 +59,6 @@ Return ONLY a valid JSON object with these exact keys:
     const result = await model.generateContent(prompt)
     const text = result.response.text()
 
-    // Extract outermost JSON object using depth tracking
     let depth = 0, start = -1, end = -1
     for (let i = 0; i < text.length; i++) {
       if (text[i] === '{') { if (depth === 0) start = i; depth++ }
@@ -74,33 +68,21 @@ Return ONLY a valid JSON object with these exact keys:
     const jsonSlice = text.slice(start, end + 1).replace(/,(\s*[}\]])/g, '$1')
     const parsed = JSON.parse(jsonSlice)
 
-    // Validate required fields
     const required = ['hook', 'summary', 'tweets', 'linkedin', 'blog', 'newsletter']
     for (const key of required) {
       if (!parsed[key]) throw new Error(`Missing field: ${key}`)
-    }
-
-    // Save to history (best-effort — don't fail the request if this errors)
-    if (userId) {
-      const { error: historyError } = await supabase.from('fury_history').insert({
-        user_id: userId, title: title || 'Untitled',
-        content: JSON.stringify(parsed), created_at: new Date().toISOString(),
-      })
-      if (historyError) console.error('History save error:', historyError.message)
     }
 
     return NextResponse.json(parsed)
 
   } catch (err: any) {
     console.error('Repurpose error:', err)
-
     if (err.message?.includes('API_KEY')) {
       return NextResponse.json({ error: 'Invalid Fury API key. Check your environment variables.' }, { status: 401 })
     }
     if (err.message?.includes('quota') || err.message?.includes('429')) {
       return NextResponse.json({ error: 'Fury rate limit reached. Wait a minute and try again.' }, { status: 429 })
     }
-
     return NextResponse.json({ error: err.message || 'Content generation failed' }, { status: 500 })
   }
 }

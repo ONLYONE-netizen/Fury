@@ -7,15 +7,6 @@ function extractVideoId(url: string): string | null {
   return null
 }
 
-async function getVideoMeta(videoId: string) {
-  try {
-    const res = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`)
-    if (!res.ok) return { title: '', author: '' }
-    const data = await res.json()
-    return { title: data.title || '', author: data.author_name || '' }
-  } catch { return { title: '', author: '' } }
-}
-
 export async function POST(req: Request) {
   try {
     const { url } = await req.json()
@@ -23,22 +14,26 @@ export async function POST(req: Request) {
     const videoId = extractVideoId(url.trim())
     if (!videoId) return NextResponse.json({ error: 'Invalid YouTube URL' }, { status: 400 })
 
-    const meta = await getVideoMeta(videoId)
-    let transcript = '', transcriptAvailable = false
+    let title = '', author = ''
+    try {
+      const meta = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`)
+      if (meta.ok) { const d = await meta.json(); title = d.title || ''; author = d.author_name || '' }
+    } catch {}
 
+    let transcript = '', transcriptAvailable = false
     try {
       const entries = await YoutubeTranscript.fetchTranscript(videoId, { lang: 'en' })
-      transcript = entries.map(e => e.text).join(' ').replace(/\s+/g, ' ').trim()
+      transcript = entries.map((e: any) => e.text).join(' ').replace(/\s+/g, ' ').trim()
       transcriptAvailable = transcript.length > 50
     } catch {
       try {
         const entries = await YoutubeTranscript.fetchTranscript(videoId)
-        transcript = entries.map(e => e.text).join(' ').replace(/\s+/g, ' ').trim()
+        transcript = entries.map((e: any) => e.text).join(' ').replace(/\s+/g, ' ').trim()
         transcriptAvailable = transcript.length > 50
-      } catch { transcriptAvailable = false }
+      } catch {}
     }
 
-    return NextResponse.json({ videoId, title: meta.title, author: meta.author, transcript: transcript.slice(0, 12000), transcriptAvailable })
+    return NextResponse.json({ videoId, title, author, transcript: transcript.slice(0, 12000), transcriptAvailable })
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed' }, { status: 500 })
   }
