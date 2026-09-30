@@ -114,11 +114,12 @@ export default function FuryApp() {
   }
 
   const generateImage = async () => {
-    if (!result?.imagePrompt) return
+    const prompt = result?.imagePrompt || result?.hook || videoTitle
+    if (!prompt) return
     setImgLoading(true)
     setImgError('')
     try {
-      const res  = await fetch('/api/image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: result.imagePrompt }) })
+      const res  = await fetch('/api/image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) })
       const data = await res.json()
       if (data.imageUrl) {
         setImgUrl(data.imageUrl)
