@@ -325,7 +325,7 @@ export default function FuryApp() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: imgUrl ? '14px' : '0' }}>
                 <div>
                   <p style={{ fontWeight: 600, fontSize: '13px' }}>AI Cover Image</p>
-                  <p style={{ fontSize: '11px', color: '#9a9a94', marginTop: '2px' }}>Thumbnail or social cover — free, powered by Flux AI</p>
+                  <p style={{ fontSize: '11px', color: '#9a9a94', marginTop: '2px' }}>Image generation for your content powered by Fury</p>
                 </div>
                 {!imgUrl && (
                   <button onClick={generateImage} disabled={imgLoading} style={{ ...S.btn, background: '#1a1a18', color: '#fff', padding: '8px 16px', fontSize: '13px', opacity: imgLoading ? 0.6 : 1 }}>
