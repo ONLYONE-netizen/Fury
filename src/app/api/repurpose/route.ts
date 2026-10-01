@@ -80,6 +80,9 @@ Return ONLY a valid JSON object with these exact keys:
     if (err.message?.includes('API_KEY')) {
       return NextResponse.json({ error: 'Invalid Fury API key. Check your environment variables.' }, { status: 401 })
     }
+    if (err.message?.includes('503') || err.message?.includes('overloaded') || err.message?.includes('high demand')) {
+      return NextResponse.json({ error: 'Fury is experiencing high demand right now. Please try again in a moment.' }, { status: 503 })
+    }
     if (err.message?.includes('quota') || err.message?.includes('429')) {
       return NextResponse.json({ error: 'Fury rate limit reached. Wait a minute and try again.' }, { status: 429 })
     }
