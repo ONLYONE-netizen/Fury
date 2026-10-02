@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, type ReactNode } from 'react'
 import { getHistory, saveToHistory, deleteFromHistory, type HistoryItem } from '@/lib/history'
 
 type Result = {
@@ -11,11 +11,33 @@ type Result = {
 
 const TABS = ['Hook','Tweets','LinkedIn','Blog','Newsletter','Summary']
 const TOOLS = [
-  { id: 'image',   icon: '🖼️', name: 'AI Cover Image',     active: true  },
-  { id: 'clip',    icon: '✂️', name: 'Clip Generator',      active: false },
-  { id: 'youtube', icon: '🤖', name: 'YouTube Automation',  active: false },
-  { id: 'weekly',  icon: '📅', name: 'Weekly Content Plan', active: false },
+  { id: 'image',   icon: 'image', name: 'AI Cover Image',     active: true  },
+  { id: 'clip',    icon: 'scissors', name: 'Clip Generator',      active: false },
+  { id: 'youtube', icon: 'bot', name: 'YouTube Automation',  active: false },
+  { id: 'weekly',  icon: 'calendar', name: 'Weekly Content Plan', active: false },
 ]
+
+function ToolIcon({ name, active }: { name: string; active: boolean }) {
+  const stroke = active ? "#1a1a18" : "#b0b0aa"
+  const paths: Record<string, ReactNode> = {
+    image: <><rect x="3" y="3" width="14" height="14" rx="2"/><circle cx="7.5" cy="7.5" r="1.5"/><path d="M17 13l-4.5-4.5a1 1 0 0 0-1.4 0L4 16"/></>,
+    scissors: <><circle cx="6" cy="6" r="2.2"/><circle cx="6" cy="14" r="2.2"/><path d="M8 7.5L17 15M8 12.5L17 5"/></>,
+    bot: <><rect x="4" y="7" width="12" height="9" rx="2"/><path d="M10 3v4M7 11v1M13 11v1"/><path d="M2 10h2M16 10h2"/></>,
+    calendar: <><rect x="3" y="4" width="14" height="13" rx="2"/><path d="M3 8h14M7 2v3M13 2v3"/></>,
+  }
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", justifyContent: "center",
+      width: "20px", height: "20px", borderRadius: "6px",
+      background: "#fff", border: "1px solid #e8e8e6",
+      boxShadow: active ? "0 1px 3px rgba(0,0,0,0.08)" : "0 1px 2px rgba(0,0,0,0.03)",
+    }}>
+      <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke={stroke} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        {paths[name]}
+      </svg>
+    </span>
+  )
+}
 
 function CopyBtn({ text }: { text: string }) {
   const [done, setDone] = useState(false)
@@ -356,7 +378,7 @@ export default function FuryApp() {
               <div key={tool.id} style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '7px 14px', borderRadius: '99px', border: '1px solid #e8e8e6', background: '#fff', cursor: tool.active ? 'pointer' : 'default', opacity: tool.active ? 1 : 0.45, position: 'relative', overflow: 'hidden', transition: 'all 0.15s' }}
                 onMouseEnter={e => tool.active && ((e.currentTarget as HTMLElement).style.borderColor = '#1a1a18')}
                 onMouseLeave={e => tool.active && ((e.currentTarget as HTMLElement).style.borderColor = '#e8e8e6')}>
-                <span style={{ fontSize: '13px' }}>{tool.icon}</span>
+                <ToolIcon name={tool.icon} active={tool.active} />
                 <span style={{ fontSize: '12px', fontWeight: 500, color: '#1a1a18', whiteSpace: 'nowrap' }}>{tool.name}</span>
                 {tool.active
                   ? <span style={{ fontSize: '9px', fontWeight: 600, padding: '2px 6px', borderRadius: '99px', background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.06em' }}>New</span>
